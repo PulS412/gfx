@@ -1,11 +1,15 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include <iostream>
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
-
-#include <iostream>
+const char *vertexShaderSource = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -50,6 +54,39 @@ int main() {
 
     while(!glfwWindowShouldClose(window)) {
         processInput(window);
+
+        //rengering commands go here
+        //...
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f); //state setting function
+        glClear(GL_COLOR_BUFFER_BIT); //state using function
+
+        float verticies[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f
+        };
+
+        //create a vertex buffer object
+        unsigned int VBO;
+        glGenBuffers(1, &VBO);
+        //bind the buffer to the gl array buffer target
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        //copy the vertex data into the buffer's memory
+        glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
+
+        unsigned int vertexShader;
+        vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+        glCompileShader(vertexShader);
+
+        int success;
+        char infoLog[512];
+        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+
+        if(!success){
+            glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        }
 
         //swap buffers to prevent flickering that may arise as a result of
         //writing to the front buffer. Writing should always be done to the
