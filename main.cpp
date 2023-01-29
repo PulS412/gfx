@@ -64,32 +64,44 @@ int main() {
         return -1;
     }
 
-    float verticies[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f
+    // float vertices[] = {
+    //     -0.5f, -0.5f, 0.0f,
+    //     0.5f, -0.5f, 0.0f,
+    //     0.0f, 0.5f, 0.0f
+    // };
+
+    float vertices[] = {
+        0.5f,  0.5f, 0.0f,  // top right
+        0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f   // top left 
     };
+    unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
+    }; 
 
-    //create a vertex buffer object
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    //bind the buffer to the gl array buffer target
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //copy the vertex data into the buffer's memory
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
-
-    //create a vertex array object
-    unsigned int VAO;
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
-
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
     //bind vertex array object
     glBindVertexArray(VAO);
-    //copy our verticies array in a buffer for opengl to use
-    glBindBuffer(GL_ARRAY_BUFFER, VAO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
+
+       //bind the buffer to the gl array buffer target
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    //copy the vertex data into the buffer's memory
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     //set our vertex attributes pointers
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    //copy our vertices array in a buffer for opengl to use
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
 
     unsigned int shaderProgram;
     CompileShaders(&shaderProgram, vertexShaderSource, fragmentShaderSource);
@@ -98,15 +110,20 @@ int main() {
     while(!glfwWindowShouldClose(window)) {
         ProcessInput(window);
 
-        //rengering commands go here
+        //rendering commands go here
         //...
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); //state setting function
         glClear(GL_COLOR_BUFFER_BIT); //state using function
 
         //draw the object
         glUseProgram(shaderProgram);
+
+        //render triangle
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        // glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        //render rectangle
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         //swap buffers to prevent flickering that may arise as a result of
         //writing to the front buffer. Writing should always be done to the
