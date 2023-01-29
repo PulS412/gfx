@@ -88,7 +88,7 @@ int main() {
     //bind vertex array object
     glBindVertexArray(VAO);
 
-       //bind the buffer to the gl array buffer target
+    //bind the buffer to the gl array buffer target
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     //copy the vertex data into the buffer's memory
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -106,6 +106,8 @@ int main() {
     unsigned int shaderProgram;
     CompileShaders(&shaderProgram, vertexShaderSource, fragmentShaderSource);
 
+    //enable wireframe mode
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     while(!glfwWindowShouldClose(window)) {
         ProcessInput(window);
@@ -123,7 +125,7 @@ int main() {
         // glDrawArrays(GL_TRIANGLES, 0, 3);
 
         //render rectangle
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_INT, 0);
 
         //swap buffers to prevent flickering that may arise as a result of
         //writing to the front buffer. Writing should always be done to the
