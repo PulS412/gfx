@@ -79,18 +79,23 @@ int main() {
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
+
     }; 
 
     unsigned int VBO, VAO, EBO;
-    glGenVertexArrays(1, &VAO);
+
+    //GenBuffers returns the names of the buffers via the pointer passed to it
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
-    //bind vertex array object
+
+    //the buffer objexts that are to be used by the vertex stage of the GL
+    //are collected together to form a vertex array object.
+    glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
     //bind the buffer to the gl array buffer target
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //copy the vertex data into the buffer's memory
+    //copy the vertex data into the VBO buffer's memory
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -121,7 +126,7 @@ int main() {
         glUseProgram(shaderProgram);
 
         //render triangle
-        glBindVertexArray(VAO);
+        // glBindVertexArray(VAO);
         // glDrawArrays(GL_TRIANGLES, 0, 3);
 
         //render rectangle
