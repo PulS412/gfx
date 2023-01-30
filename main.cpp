@@ -19,7 +19,7 @@ const char *fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
-    "    FragColor = vec4(0.0f, 1.0f, 0.0f, 1.0f);\n"
+    "    FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
     "}\0";
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -64,26 +64,35 @@ int main() {
         return -1;
     }
 
-    // float vertices[] = {
-    //     -0.5f, -0.5f, 0.0f,
-    //     0.5f, -0.5f, 0.0f,
-    //     0.0f, 0.5f, 0.0f
-    // };
-
     float vertices[] = {
-        0.5f, 0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f, 0.5f, 0.0f,   // top left 
-        0.0f, 1.0f,  0.0f, //top middle
-        0.0f, -1.0f, 0.0f //bottom middle
+        //left triangle
+        -1.0f, -1.0f, 0.0f,
+        0.0f, -1.0f, 0.0f,
+        -0.5f, 0.0f, 0.0f,
+        //top triangle
+        0.5f, 0.0f, 0.0f,
+        -0.5f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        //right triangle
+        1.0f, -1.0f, 0.0f,
+        0.0f, -1.0f, 0.0f,
+        0.5f, 0.0f, 0.0f
     };
-    unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 3,   // first triangle
-        1, 2, 3,   // second triangle
-        3, 4, 0,   // third triangle
-        2, 5, 1    //fourth triangle
-    }; 
+
+    // float vertices[] = {
+    //     0.5f, 0.5f, 0.0f,  // top right
+    //     0.5f, -0.5f, 0.0f,  // bottom right
+    //     -0.5f, -0.5f, 0.0f,  // bottom left
+    //     -0.5f, 0.5f, 0.0f,   // top left 
+    //     0.0f, 1.0f,  0.0f, //top middle
+    //     0.0f, -1.0f, 0.0f //bottom middle
+    // };
+    // unsigned int indices[] = {  // note that we start from 0!
+    //     0, 1, 3,   // first triangle
+    //     1, 2, 3,   // second triangle
+    //     3, 4, 0,   // third triangle
+    //     2, 5, 1    //fourth triangle
+    // }; 
 
     //vertex_buffer_object can store a
     //large number of verticies in the GPUs memory
@@ -105,15 +114,15 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
     //copy the vertex data into the vertex_buffer_object buffer's memory
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     //set our vertex attributes pointers
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     //copy our vertices array in a buffer for opengl to use
-    // glBindBuffer(GL_ARRAY_BUFFER, 0);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
 
     unsigned int shaderProgram;
@@ -134,11 +143,11 @@ int main() {
         glUseProgram(shaderProgram);
 
         //render triangle
-        // glBindVertexArray(vertex_array_object);
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(vertex_array_object);
+        glDrawArrays(GL_TRIANGLES, 0, 12);
 
         //render rectangle
-        glDrawElements(GL_TRIANGLE_STRIP, 12, GL_UNSIGNED_INT, 0);
+        // glDrawElements(GL_TRIANGLE_STRIP, 12, GL_UNSIGNED_INT, 0);
 
         //swap buffers to prevent flickering that may arise as a result of
         //writing to the front buffer. Writing should always be done to the
