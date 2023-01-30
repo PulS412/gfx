@@ -94,26 +94,31 @@ int main() {
     //     2, 5, 1    //fourth triangle
     // }; 
 
-    //vertex_buffer_object can store a
+    //VBO can store a
     //large number of verticies in the GPUs memory
-    unsigned int vertex_buffer_object;
-    //vertex_array_object is a vertex array
-    unsigned int vertex_array_object;
-    unsigned int EBO;
+    unsigned int VBO;
+    //VAO is a vertex array
+    unsigned int VAO;
+    // unsigned int EBO;
 
     //GenBuffers returns the names of the buffers via the pointer passed to it
-    glGenBuffers(1, &vertex_buffer_object);
-    glGenBuffers(1, &EBO);
-
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    // glGenBuffers(1, &EBO);
+    //bind the buffer to the gl array buffer target
+    
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    
+    
+    //copy the vertex data into the VBO buffer's memory
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     //the buffer objexts that are to be used by the vertex stage of the GL
     //are collected together to form a vertex array object.
-    glGenVertexArrays(1, &vertex_array_object);
-    glBindVertexArray(vertex_array_object);
 
-    //bind the buffer to the gl array buffer target
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
-    //copy the vertex data into the vertex_buffer_object buffer's memory
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+
+
     // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
@@ -122,7 +127,6 @@ int main() {
     glEnableVertexAttribArray(0);
     //copy our vertices array in a buffer for opengl to use
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
 
     unsigned int shaderProgram;
@@ -143,7 +147,7 @@ int main() {
         glUseProgram(shaderProgram);
 
         //render triangle
-        glBindVertexArray(vertex_array_object);
+        glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 12);
 
         //render rectangle
