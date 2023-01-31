@@ -15,11 +15,17 @@ const char *vertexShaderSource = "#version 330 core\n"
 
 // This is a simple fragment shader written in GLSL version 3.30
 //that sets the final color of a fragment to a shade of orange
-const char *fragmentShaderSource = "#version 330 core\n"
+const char *fragmentShaderSourceYellow = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
     "    FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
+    "}\0";
+const char *fragmentShaderSourceBlue= "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "    FragColor = vec4(0.0f, 0.0f, 1.0f, 1.0f);\n"
     "}\0";
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -120,9 +126,10 @@ int main() {
     //copy our vertices array in a buffer for opengl to use
     
 
-    unsigned int shaderProgram;
-    CompileShaders(&shaderProgram, vertexShaderSource, fragmentShaderSource);
-
+    unsigned int shaderProgramYellow;
+    CompileShaders(&shaderProgramYellow, vertexShaderSource, fragmentShaderSourceYellow);
+    unsigned int shaderProgramBlue;
+    CompileShaders(&shaderProgramBlue, vertexShaderSource, fragmentShaderSourceBlue);
     //enable wireframe mode
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -135,12 +142,12 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT); //state using function
 
         //draw the object
-        glUseProgram(shaderProgram);
-
+        glUseProgram(shaderProgramYellow);
         //render triangle
         glBindVertexArray(VAO[0]);
         glDrawArrays(GL_TRIANGLES, 0, 12);
 
+        glUseProgram(shaderProgramBlue);
         glBindVertexArray(VAO[1]);
         glDrawArrays(GL_TRIANGLES, 0, 12);
         //render rectangle
