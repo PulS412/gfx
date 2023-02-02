@@ -95,7 +95,7 @@ int main() {
         0.5f, 0.0f, 0.0f,           0.0f, 0.0f, 1.0f //top
     };
 
-    Shader ourShader("shaders/shader.vs", "shaders/shader.fs");
+    Shader ourShader("../shader.vs", "../shader.fs");
     //VBO can store a
     //large number of verticies in the GPUs memory
     unsigned int VBO[2];
