@@ -2,31 +2,32 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <math.h>
+#include "Shader.h"
 
 // This vertex shader takes in the 3D coordinates of an object's
 //vertices and applies mathematical operations to transform them
 //into 2D screen coordinates, which are then passed to the fragment
 //shader to determine the color of each pixel on the screen
-const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aColor;\n"
+// const char *vertexShaderSource = "#version 330 core\n"
+//     "layout (location = 0) in vec3 aPos;\n"
+//     "layout (location = 1) in vec3 aColor;\n"
     
-    "out vec3 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos, 1.0);\n"
-    "   ourColor = aColor;\n"
-    "}\0";
+//     "out vec3 ourColor;\n"
+//     "void main()\n"
+//     "{\n"
+//     "   gl_Position = vec4(aPos, 1.0);\n"
+//     "   ourColor = aColor;\n"
+//     "}\0";
 
 // This is a simple fragment shader written in GLSL version 3.30
 //that sets the final color of a fragment to a shade of orange
-const char *fragmentShaderSourceYellow = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "in vec3 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "    FragColor = vec4(ourColor, 1.0);\n"
-    "}\0";
+// const char *fragmentShaderSourceYellow = "#version 330 core\n"
+//     "out vec4 FragColor;\n"
+//     "in vec3 ourColor;\n"
+//     "void main()\n"
+//     "{\n"
+//     "    FragColor = vec4(ourColor, 1.0);\n"
+//     "}\0";
 // const char *fragmentShaderSourceBlue= "#version 330 core\n"
 //     "out vec4 FragColor;\n"
 //     "void main()\n"
@@ -94,7 +95,7 @@ int main() {
         0.5f, 0.0f, 0.0f,           0.0f, 0.0f, 1.0f //top
     };
 
-
+    Shader ourShader("shaders/shader.vs", "shaders/shader.fs");
     //VBO can store a
     //large number of verticies in the GPUs memory
     unsigned int VBO[2];
@@ -141,7 +142,7 @@ int main() {
     
 
     unsigned int shaderProgramYellow;
-    CompileShaders(&shaderProgramYellow, vertexShaderSource, fragmentShaderSourceYellow);
+    // CompileShaders(&shaderProgramYellow, vertexShaderSource, fragmentShaderSourceYellow);
     // unsigned int shaderProgramBlue;
     // CompileShaders(&shaderProgramBlue, vertexShaderSource, fragmentShaderSourceBlue);
     //enable wireframe mode
@@ -156,13 +157,15 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT); //state using function
 
         //draw the object
-        glUseProgram(shaderProgramYellow);
+        // glUseProgram(shaderProgramYellow);
 
         float timeValue = glfwGetTime();
         float greenValue = sin(timeValue) / 2.0f + 0.5f;
         int vertexColorLocation = glGetUniformLocation(shaderProgramYellow, "ourColor");
         glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+        
         //render triangle
+        ourShader.use();
         glBindVertexArray(VAO[0]);
         glDrawArrays(GL_TRIANGLES, 0, 12);
 
