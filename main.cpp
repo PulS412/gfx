@@ -3,37 +3,15 @@
 #include <iostream>
 #include <math.h>
 #include "Shader.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image/stb_image.h>
 
-// This vertex shader takes in the 3D coordinates of an object's
-//vertices and applies mathematical operations to transform them
-//into 2D screen coordinates, which are then passed to the fragment
-//shader to determine the color of each pixel on the screen
-// const char *vertexShaderSource = "#version 330 core\n"
-//     "layout (location = 0) in vec3 aPos;\n"
-//     "layout (location = 1) in vec3 aColor;\n"
-    
-//     "out vec3 ourColor;\n"
-//     "void main()\n"
-//     "{\n"
-//     "   gl_Position = vec4(aPos, 1.0);\n"
-//     "   ourColor = aColor;\n"
-//     "}\0";
+// int width, height, nrChannels;
+// unsigned char *data = stbi_load("oot_cow_box.png", &width, &height, &nrChannels, 0);
 
-// This is a simple fragment shader written in GLSL version 3.30
-//that sets the final color of a fragment to a shade of orange
-// const char *fragmentShaderSourceYellow = "#version 330 core\n"
-//     "out vec4 FragColor;\n"
-//     "in vec3 ourColor;\n"
-//     "void main()\n"
-//     "{\n"
-//     "    FragColor = vec4(ourColor, 1.0);\n"
-//     "}\0";
-// const char *fragmentShaderSourceBlue= "#version 330 core\n"
-//     "out vec4 FragColor;\n"
-//     "void main()\n"
-//     "{\n"
-//     "    FragColor = vec4(0.0f, 0.0f, 1.0f, 1.0f);\n"
-//     "}\0";
+// unsigned int texture;
+// glGenTextures(1, &texture) 
+// glBindTexture(GL_TEXTURE_2D, texture);  
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void ProcessInput(GLFWwindow* window);
@@ -94,6 +72,18 @@ int main() {
         0.0f, -1.0f, 0.0f,          0.0f, 1.0f, 0.0f, //bottom left
         0.5f, 0.0f, 0.0f,           0.0f, 0.0f, 1.0f //top
     };
+
+    float texCoords[]={
+        0.0f, 0.0f,  // lower-left corner  
+        1.0f, 0.0f,  // lower-right corner
+        0.5f, 1.0f   // top-center corner    
+    };
+
+    float borderColor[]={1.0f, 1.0f, 0.0f, 1.0f};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
     Shader ourShader("../shader.vs", "../shader.fs");
     //VBO can store a
@@ -158,11 +148,11 @@ int main() {
 
         //draw the object
 
-        // float timeValue = glfwGetTime();
-        // float greenValue = sin(timeValue) / 2.0f + 0.5f;
+        float timeValue = glfwGetTime();
+        float colorAmplitude = 3*sin(timeValue*2) + 3.0f;
         // int vertexColorLocation = glGetUniformLocation(shaderProgramYellow, "ourColor");
         // glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
-        // ourShader.setFloat("xOffset", 0.5f);
+        ourShader.setFloat("colorAmplitude", colorAmplitude);
         //render triangle
         ourShader.use();
         glBindVertexArray(VAO[0]);
