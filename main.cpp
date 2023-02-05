@@ -3,38 +3,24 @@
 #include <iostream>
 #include <math.h>
 #include "Shader.h"
+#include "FileManager.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
-#ifdef _WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-#endif
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void ProcessInput(GLFWwindow* window);
-std::string GetCurrentWorkingDirectory();
 
 //window dimensions
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-int main() {
-    std::string current_directory = GetCurrentWorkingDirectory();
-    std::string slash;
-    #ifdef _WIN32
-    slash = "\\";
-    #else
-    slash = "/";
-    #endif
 
-    std::cout << current_directory << std::endl;
-    std::string vsShaderPath = current_directory + slash + "shaders" + slash + "shader.vs";
-    std::cout << vsShaderPath << std::endl;
-    std::string fsShaderPath = current_directory + slash + "shaders" + slash + "shader.fs";
-    std::cout << fsShaderPath << std::endl;
-    std::string texturePath = current_directory + slash + "textures" + slash + "oot_cow_box.png";
-    std::cout << texturePath << std::endl;
+int main() {
+    FileManager Cabinet;
+    string vsShaderPath(Cabinet.GetFilePath("shaders","shader.vs"));
+    string fsShaderPath(Cabinet.GetFilePath("shaders", "shader.fs"));
+    string texturePath(Cabinet.GetFilePath("textures", "oot_cow_box.png"));
 
     //initialize the glfw library
     glfwInit();
@@ -127,7 +113,7 @@ int main() {
         return 1;
     }
     stbi_image_free(data);
-
+    std::cout << "vertexPath" << vsShaderPath << std::endl;
     Shader ourShader(vsShaderPath.c_str(), fsShaderPath.c_str());
     
     while(!glfwWindowShouldClose(window)) {
@@ -175,14 +161,5 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0, 0, width, height);
 }
 
-std::string GetCurrentWorkingDirectory() {
-#ifdef _WIN32
-    char buf[MAX_PATH]; 
-    GetCurrentDirectoryA(MAX_PATH, buf);
-    return std::string(buf);
-#else
-    char buf[PATH_MAX];
-    getcwd(buf, sizeof(buf));
-    return std::string(buf);
-#endif
-}
+
+

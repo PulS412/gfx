@@ -4,7 +4,9 @@ project(gfx3D)
 # Add source files
 set(SOURCES
     main.cpp
-    glad.c)
+    glad.c
+    FileManager.cc
+    )
 
 # Create executable
 add_executable(gfx3D ${SOURCES})
