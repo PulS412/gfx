@@ -5,15 +5,37 @@
 #include "Shader.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <unistd.h>
+#endif
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void ProcessInput(GLFWwindow* window);
+std::string GetCurrentWorkingDirectory();
 
 //window dimensions
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 int main() {
+    std::string current_directory = GetCurrentWorkingDirectory();
+    std::string slash;
+    #ifdef _WIN32
+    slash = "\\..\\";
+    #else
+    slash = "/../";
+    #endif
+
+    std::cout << current_directory << std::endl;
+    std::string vsShaderPath = current_directory + slash + "shader.vs";
+    std::cout << vsShaderPath << std::endl;
+    std::string fsShaderPath = current_directory + slash + "shader.fs";
+    std::cout << fsShaderPath << std::endl;
+    std::string texturePath = current_directory + slash + "oot_cow_box.png";
+    std::cout << texturePath << std::endl;
+
     //initialize the glfw library
     glfwInit();
 
@@ -91,19 +113,22 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    //get the current working directory for cross platform compatability (windows/linux)
     //load and generate the texture
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("oot_cow_box.png", &width, &height, &nrChannels, 0);
-    if(data){
+
+    unsigned char *data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
+    if(data != nullptr){
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else{
-        std::cout << "Failed to load texture" << std::endl;
+        std::cout << "Failed to load texture data" << std::endl;
+        return 1;
     }
     stbi_image_free(data);
 
-    Shader ourShader("shader.vs", "shader.fs");
+    Shader ourShader(vsShaderPath.c_str(), fsShaderPath.c_str());
     
     while(!glfwWindowShouldClose(window)) {
         ProcessInput(window);
@@ -148,4 +173,14 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     //device coordinates of the rendered scene to the screen
     //coordinates of the viewport in pixels
     glViewport(0, 0, width, height);
+}
+
+std::string GetCurrentWorkingDirectory() {
+  char buf[PATH_MAX];
+#ifdef _WIN32
+  GetCurrentDirectoryA(PATH_MAX, buf);
+#else
+  getcwd(buf, sizeof(buf));
+#endif
+  return std::string(buf);
 }
