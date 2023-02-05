@@ -23,17 +23,17 @@ int main() {
     std::string current_directory = GetCurrentWorkingDirectory();
     std::string slash;
     #ifdef _WIN32
-    slash = "\\..\\";
+    slash = "\\";
     #else
-    slash = "/../";
+    slash = "/";
     #endif
 
     std::cout << current_directory << std::endl;
-    std::string vsShaderPath = current_directory + slash + "shaders/shader.vs";
+    std::string vsShaderPath = current_directory + slash + "shaders" + slash + "shader.vs";
     std::cout << vsShaderPath << std::endl;
-    std::string fsShaderPath = current_directory + slash + "shaders/shader.fs";
+    std::string fsShaderPath = current_directory + slash + "shaders" + slash + "shader.fs";
     std::cout << fsShaderPath << std::endl;
-    std::string texturePath = current_directory + slash + "textures/oot_cow_box.png";
+    std::string texturePath = current_directory + slash + "textures" + slash + "oot_cow_box.png";
     std::cout << texturePath << std::endl;
 
     //initialize the glfw library
@@ -176,11 +176,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){
 }
 
 std::string GetCurrentWorkingDirectory() {
-  char buf[PATH_MAX];
 #ifdef _WIN32
-  GetCurrentDirectoryA(PATH_MAX, buf);
+    char buf[MAX_PATH]; 
+    GetCurrentDirectoryA(MAX_PATH, buf);
+    return std::string(buf);
 #else
-  getcwd(buf, sizeof(buf));
+    char buf[PATH_MAX];
+    getcwd(buf, sizeof(buf));
+    return std::string(buf);
 #endif
-  return std::string(buf);
 }
