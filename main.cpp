@@ -29,11 +29,11 @@ int main() {
     #endif
 
     std::cout << current_directory << std::endl;
-    std::string vsShaderPath = current_directory + slash + "shader.vs";
+    std::string vsShaderPath = current_directory + slash + "shaders/shader.vs";
     std::cout << vsShaderPath << std::endl;
-    std::string fsShaderPath = current_directory + slash + "shader.fs";
+    std::string fsShaderPath = current_directory + slash + "shaders/shader.fs";
     std::cout << fsShaderPath << std::endl;
-    std::string texturePath = current_directory + slash + "oot_cow_box.png";
+    std::string texturePath = current_directory + slash + "textures/oot_cow_box.png";
     std::cout << texturePath << std::endl;
 
     //initialize the glfw library
