@@ -17,10 +17,11 @@ const unsigned int SCR_HEIGHT = 600;
 
 
 int main() {
-    FileManager Cabinet;
-    string vsShaderPath(Cabinet.GetFilePath("shaders","shader.vs"));
-    string fsShaderPath(Cabinet.GetFilePath("shaders", "shader.fs"));
-    string texturePath(Cabinet.GetFilePath("textures", "oot_cow_box.png"));
+    FileManager cabinet;
+    string vsShaderPath(cabinet.GetFilePath("shaders","shader.vs"));
+    string fsShaderPath(cabinet.GetFilePath("shaders", "shader.fs"));
+    string boxTexturePath(cabinet.GetFilePath("textures", "oot_cow_box.png"));
+    string awesomeTexturePath(cabinet.GetFilePath("textures", "awesomeface.png"));
 
     //initialize the glfw library
     glfwInit();
@@ -89,21 +90,21 @@ int main() {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture); 
+    unsigned int boxTexture, awesomeTexture;
+    glGenTextures(1, &boxTexture);
+    glBindTexture(GL_TEXTURE_2D, boxTexture);
     
     //set the texture wrapping/filtering options on the currently bound texture object
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     //get the current working directory for cross platform compatability (windows/linux)
     //load and generate the texture
     int width, height, nrChannels;
-
-    unsigned char *data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
+    stbi_set_flip_vertically_on_load(true);  
+    unsigned char *data = stbi_load(boxTexturePath.c_str(), &width, &height, &nrChannels, 0);
     if(data != nullptr){
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -113,9 +114,31 @@ int main() {
         return 1;
     }
     stbi_image_free(data);
+
+    glGenTextures(1, &awesomeTexture);
+    glBindTexture(GL_TEXTURE_2D, awesomeTexture); 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    data = stbi_load(awesomeTexturePath.c_str(), &width, &height, &nrChannels, 0);
+    if(data != nullptr){
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else{
+        std::cout << "Failed to load texture data" << std::endl;
+        return 1;
+    }
+    stbi_image_free(data);
+
     std::cout << "vertexPath" << vsShaderPath << std::endl;
     Shader ourShader(vsShaderPath.c_str(), fsShaderPath.c_str());
-    
+    // glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0); //set it manually
+    ourShader.use();
+    ourShader.setInt("texture2", 1); //or with shader class
+
     while(!glfwWindowShouldClose(window)) {
         ProcessInput(window);
 
@@ -125,9 +148,12 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT); //state using function
 
         //draw the object
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, boxTexture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, awesomeTexture);
         //render
-        ourShader.use();
+        
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
