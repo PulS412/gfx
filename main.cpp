@@ -97,8 +97,8 @@ int main() {
     //set the texture wrapping/filtering options on the currently bound texture object
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER , GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER , GL_LINEAR);
 
     //get the current working directory for cross platform compatability (windows/linux)
     //load and generate the texture
@@ -119,7 +119,7 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, awesomeTexture); 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     data = stbi_load(awesomeTexturePath.c_str(), &width, &height, &nrChannels, 0);
@@ -138,6 +138,7 @@ int main() {
     // glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0); //set it manually
     ourShader.use();
     ourShader.setInt("texture2", 1); //or with shader class
+    ourShader.setFloat("mixDegree", 0.8f);
 
     while(!glfwWindowShouldClose(window)) {
         ProcessInput(window);
