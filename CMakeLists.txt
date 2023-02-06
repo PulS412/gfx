@@ -13,7 +13,7 @@ add_executable(gfx3D ${SOURCES})
 
 add_subdirectory(
     external/glfw
-    external/glm)
+    external/glm/glm)
 
 target_include_directories(gfx3D
     PRIVATE external/glfw/include
