@@ -7,13 +7,13 @@ using namespace std;
 #define FM_MAX_PATH_LENGTH MAX_PATH
 #else
 #include <unistd.h>
+#include <limits.h>
 #define FM_MAX_PATH_LENGTH PATH_MAX
 #endif
 
 class FileManager{
 private:
     string current_directory;
-    string slash;
     string file_path;
     string GetCurrentWorkingDirectory();
 

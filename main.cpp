@@ -15,7 +15,6 @@ void ProcessInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-
 int main() {
     FileManager cabinet;
     string vsShaderPath(cabinet.GetFilePath("shaders","shader.vs"));
