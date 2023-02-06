@@ -11,10 +11,13 @@ set(SOURCES
 # Create executable
 add_executable(gfx3D ${SOURCES})
 
-add_subdirectory(external/glfw)
+add_subdirectory(
+    external/glfw
+    external/glm)
 
 target_include_directories(gfx3D
     PRIVATE external/glfw/include
+    PRIVATE external/glm/glm
     PRIVATE include)
 
 target_link_directories(gfx3D
