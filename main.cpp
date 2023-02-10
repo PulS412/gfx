@@ -167,6 +167,15 @@ int main() {
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+        mat4 trans2 = mat4(1.0f);
+        trans2 = translate(trans2, vec3(-0.5f, 0.0f, 0.0f));
+        float amplitude = sin(glfwGetTime());
+        vec3 scalar(amplitude, amplitude, 0.0f);
+        trans2 = scale(trans2, scalar);
+        unsigned int transformLoc2 = glGetUniformLocation(ourShader.ID, "transform");
+        glUniformMatrix4fv(transformLoc2, 1, GL_FALSE, value_ptr(trans2));
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
         //swap buffers to prevent flickering that may arise as a result of
         //writing to the front buffer. Writing should always be done to the
         //back buffer while the front buffer is displayed
