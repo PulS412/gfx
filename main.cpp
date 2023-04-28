@@ -151,12 +151,26 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); //state setting function
         glClear(GL_COLOR_BUFFER_BIT); //state using function
 
-        mat4 trans = mat4(1.0f);
-        trans = translate(trans, vec3(0.5f, -0.5f, 0.0f));
-        trans = rotate(trans, (float)glfwGetTime(), vec3(0.0f, 0.0f, 1.0f));
-        unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, value_ptr(trans));
-        
+        //transform vertex coordinates to world coordinates
+        mat4 model = mat4(1.0f); //create the model matrix
+        model = rotate(model, radians(-55.0f), vec3(1.0f, 0.0f, 0.0f));
+
+        //create view matrix
+        mat4 view = mat4(1.0f);
+        //note that we are translating the scene in the reverse direction of where we want to move
+        view = translate(view, vec3(0.0f, 0.0f, -3.0f));
+
+        //create the projection matrix
+        mat4 projection;
+        projection = perspective(radians(45.0f), 900.0f / 600.0f, 0.1f, 100.0f);
+        int modelLoc = glGetUniformLocation(ourShader.ID, "model");
+        int viewLoc = glGetUniformLocation(ourShader.ID, "view");
+
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
+
+        //note we currently set the projection matrix each frame, but since the projection matrix rarely changes, it's often best to set it outside the main loop
+        ourShader.setMat4("projection", projection);
         //draw the object
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, boxTexture);
