@@ -58,7 +58,9 @@ int main() {
         std::cout << "Failed to initialize glad\n";
         return -1;
     }
-
+    
+    glEnable(GL_DEPTH_TEST);
+    
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -179,13 +181,14 @@ int main() {
     ourShader.setInt("texture2", 1); //or with shader class
     ourShader.setFloat("mixDegree", 0.5f);
 
+    
     while(!glfwWindowShouldClose(window)) {
         ProcessInput(window);
 
         //rendering commands go here
         //...
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); //state setting function
-        glClear(GL_COLOR_BUFFER_BIT); //state using function
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //state using function
 
         //transform vertex coordinates to world coordinates
         mat4 model = mat4(1.0f); //create the model matrix
